@@ -5,6 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chen Pilot Settings</title>
   <style>
+    /* ── Theme tokens ────────────────────────────────────────────────────
+       Contrast targets (WCAG 2.1 AA):
+         - body text  ≥ 4.5:1  → --text on --bg / --surface
+         - muted text ≥ 4.5:1  → --text-muted on --surface
+         - control borders ≥ 3:1 (non-text) → --border-strong on --surface
+         - primary button ≥ 4.5:1 → --on-primary on --primary
+    ──────────────────────────────────────────────────────────────────── */
+    :root {
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --surface-alt: #eef1f5;
+      --text: #1f2937;          /* 12.6:1 on --surface */
+      --text-muted: #4b5563;    /* 7.5:1 on --surface */
+      --border: #6b7280;        /* 4.8:1 on --surface (input borders) */
+      --border-subtle: #d1d5db;
+      --primary: #1d4ed8;       /* white on it ≈ 6.7:1 */
+      --on-primary: #ffffff;
+      --primary-hover: #1e40af;
+      --focus-ring: rgba(29, 78, 216, 0.45);
+      --success-bg: #d1fae5;
+      --success-text: #065f46;  /* 7.0:1 on --success-bg */
+      --danger-bg: #fee2e2;
+      --danger-text: #991b1b;
+      --overlay: rgba(17, 24, 39, 0.55);
+      --shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --surface-alt: #273449;
+        --text: #e5e7eb;          /* 10.4:1 on --surface */
+        --text-muted: #cbd5e1;    /* 8.6:1 on --surface */
+        --border: #94a3b8;        /* 5.9:1 on --surface */
+        --border-subtle: #475569;
+        --primary: #60a5fa;       /* dark text on it ≈ 7.0:1 */
+        --on-primary: #0f172a;
+        --primary-hover: #93c5fd;
+        --focus-ring: rgba(96, 165, 250, 0.55);
+        --success-bg: #064e3b;
+        --success-text: #a7f3d0;  /* 8.9:1 on --success-bg */
+        --danger-bg: #7f1d1d;
+        --danger-text: #fecaca;
+        --overlay: rgba(2, 6, 23, 0.7);
+        --shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+      }
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -12,27 +61,47 @@
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background-color: #f5f5f5;
-      color: #333;
+      background-color: var(--bg);
+      color: var(--text);
       padding: 20px;
+      transition: background-color 0.2s, color 0.2s;
     }
     .container {
-      max-width: 500px;
+      max-width: 560px;
       margin: 0 auto;
-      background: white;
+      background: var(--surface);
       border-radius: 12px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      box-shadow: var(--shadow);
       padding: 30px;
     }
     h1 {
       font-size: 24px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
       margin-bottom: 24px;
-      color: #111;
+    }
+    fieldset {
+      border: none;
+      margin: 0;
+      padding: 0 0 20px;
+    }
+    legend {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding: 0;
     }
     .setting-item {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       padding-bottom: 20px;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--border-subtle);
     }
     .setting-item:last-child {
       border-bottom: none;
@@ -44,37 +113,50 @@
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 8px;
-      color: #555;
+      color: var(--text);
+    }
+    .hint {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
     }
     .select, .input {
       width: 100%;
       padding: 12px 16px;
-      border: 2px solid #e5e7eb;
+      border: 2px solid var(--border);
       border-radius: 8px;
       font-size: 16px;
-      transition: all 0.2s;
+      background-color: var(--surface);
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .select:focus, .input:focus {
+    .select:focus-visible, .input:focus-visible,
+    .save-btn:focus-visible, .secondary-btn:focus-visible,
+    .toggle-switch:focus-visible, .link-btn:focus-visible {
       outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--focus-ring);
     }
     .toggle {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
     }
     .toggle-switch {
       position: relative;
       width: 52px;
       height: 28px;
-      background-color: #e5e7eb;
+      flex: none;
+      background-color: var(--border);
+      border: none;
       border-radius: 14px;
       cursor: pointer;
       transition: background-color 0.2s;
     }
-    .toggle-switch.active {
-      background-color: #2563eb;
+    .toggle-switch[aria-checked="true"] {
+      background-color: var(--primary);
     }
     .toggle-switch::before {
       content: '';
@@ -83,130 +165,595 @@
       left: 2px;
       width: 24px;
       height: 24px;
-      background-color: white;
+      background-color: var(--on-primary);
       border-radius: 50%;
       transition: transform 0.2s;
     }
-    .toggle-switch.active::before {
+    .toggle-switch[aria-checked="true"]::before {
       transform: translateX(24px);
     }
-    .save-btn {
+    .preview {
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .preview .preview-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 0;
+    }
+    .preview .preview-label {
+      color: var(--text-muted);
+    }
+    .preview .preview-value {
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .selection-summary {
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--text);
+      margin-top: 4px;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .save-btn, .secondary-btn {
       width: 100%;
       padding: 14px;
-      background-color: #2563eb;
-      color: white;
       border: none;
       border-radius: 8px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s, transform 0.1s;
     }
-    .save-btn:hover {
-      background-color: #1d4ed8;
+    .save-btn {
+      background-color: var(--primary);
+      color: var(--on-primary);
     }
-    .save-btn:active {
-      transform: translateY(1px);
+    .save-btn:hover { background-color: var(--primary-hover); }
+    .save-btn:active { transform: translateY(1px); }
+    .secondary-btn {
+      background-color: var(--surface-alt);
+      color: var(--text);
+      border: 2px solid var(--border);
     }
+    .secondary-btn:hover { background-color: var(--border-subtle); }
     .success-msg {
       display: none;
-      background-color: #dcfce7;
-      color: #166534;
+      background-color: var(--success-bg);
+      color: var(--success-text);
       padding: 12px 16px;
       border-radius: 8px;
       margin-top: 20px;
       text-align: center;
+      font-weight: 600;
     }
-    .success-msg.show {
-      display: block;
+    .success-msg.show { display: block; }
+
+    /* ── Modal ────────────────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: var(--overlay);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+    .modal {
+      background-color: var(--surface);
+      color: var(--text);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      max-width: 420px;
+      width: 100%;
+      padding: 28px;
+    }
+    .modal h2 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .modal p {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .modal .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .modal .modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .modal .btn-danger {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+    .modal .btn-danger:hover { background-color: var(--primary-hover); }
+    .modal .btn-cancel {
+      background-color: var(--surface-alt);
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+    .modal .link-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 0;
+      text-decoration: underline;
+    }
+    .modal .link-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus-ring);
+      border-radius: 4px;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>⚙️ Chen Pilot Settings</h1>
-    
-    <div class="setting-item">
-      <label class="label">Preferred Currency</label>
-      <select class="select" id="currency">
-        <option value="USD">USD</option>
-        <option value="XLM">XLM</option>
-        <option value="BTC">BTC</option>
-      </select>
-    </div>
-    
-    <div class="setting-item">
-      <div class="toggle">
-        <span class="label">Price Alerts</span>
-        <div class="toggle-switch active" id="priceAlertsToggle"></div>
-      </div>
-    </div>
-    
-    <div class="setting-item">
-      <div class="toggle">
-        <span class="label">Transaction Notifications</span>
-        <div class="toggle-switch active" id="txNotificationsToggle"></div>
-      </div>
-    </div>
-    
-    <div class="setting-item">
-      <div class="toggle">
-        <span class="label">Daily Market Digest</span>
-        <div class="toggle-switch" id="marketDigestToggle"></div>
-      </div>
-    </div>
+    <p class="subtitle">Account preferences for this device.</p>
 
-    <button class="save-btn" id="saveBtn">Save Settings</button>
-    
-    <div class="success-msg" id="successMsg">
-      ✅ Settings saved successfully!
-    </div>
+    <!-- Live regions: selection changes and save confirmations are announced
+         to assistive technology without moving focus. -->
+    <div id="selectionSummary" class="selection-summary" aria-live="polite"></div>
+
+    <form id="settingsForm" novalidate>
+      <fieldset>
+        <legend>Payment</legend>
+
+        <div class="setting-item">
+          <label class="label" for="currency">Display currency</label>
+          <select class="select" id="currency" name="currency">
+            <option value="USD">USD — US Dollar</option>
+            <option value="XLM">XLM — Stellar Lumens</option>
+            <option value="BTC">BTC — Bitcoin</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <label class="label" for="asset">Payment asset</label>
+          <select class="select" id="asset" name="asset">
+            <option value="XLM">XLM — Stellar Lumens</option>
+            <option value="USDC">USDC — USD Coin</option>
+            <option value="BTC">BTC — Bitcoin</option>
+          </select>
+          <span class="hint" id="assetHint">Asset used when initiating payments.</span>
+        </div>
+
+        <div class="setting-item">
+          <label class="label" for="memo">Payment memo (optional)</label>
+          <input class="input" type="text" id="memo" name="memo"
+                 maxlength="256" autocomplete="off"
+                 aria-describedby="memoHint"
+                 placeholder="e.g. invoice 1042" />
+          <span class="hint" id="memoHint">Attached to payments as the Stellar transaction memo. Leave blank for none.</span>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Regional format</legend>
+
+        <div class="setting-item">
+          <label class="label" for="locale">Locale</label>
+          <select class="select" id="locale" name="locale">
+            <option value="en-US">English (United States)</option>
+            <option value="en-GB">English (United Kingdom)</option>
+            <option value="de-DE">Deutsch (Deutschland)</option>
+            <option value="fr-FR">Français (France)</option>
+            <option value="ja-JP"> (Japan)</option>
+          </select>
+          <span class="hint">Controls date, time, and number formatting below.</span>
+        </div>
+
+        <div class="setting-item">
+          <label class="label" for="dateStyle">Date format</label>
+          <select class="select" id="dateStyle" name="dateStyle">
+            <option value="short">Short — 12/25/2026</option>
+            <option value="medium">Medium — Dec 25, 2026</option>
+            <option value="long">Long — December 25, 2026</option>
+            <option value="full">Full — Friday, December 25, 2026</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <label class="label" for="hourCycle">Time format</label>
+          <select class="select" id="hourCycle" name="hourCycle">
+            <option value="h23">24-hour — 14:30</option>
+            <option value="h12">12-hour — 2:30 PM</option>
+            <option value="locale">Locale default</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <label class="label" for="numberStyle">Number format</label>
+          <select class="select" id="numberStyle" name="numberStyle">
+            <option value="decimal">Decimal — 1,234.56</option>
+            <option value="currency">Currency — $1,234.56</option>
+            <option value="percent">Percent — 12.3%</option>
+            <option value="compact">Compact — 1.2K</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <span class="label" id="previewLabel">Format preview</span>
+          <div class="preview" role="group" aria-labelledby="previewLabel">
+            <div class="preview-row">
+              <span class="preview-label">Date</span>
+              <span class="preview-value" id="previewDate"></span>
+            </div>
+            <div class="preview-row">
+              <span class="preview-label">Time</span>
+              <span class="preview-value" id="previewTime"></span>
+            </div>
+            <div class="preview-row">
+              <span class="preview-label">Number</span>
+              <span class="preview-value" id="previewNumber"></span>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Notifications</legend>
+
+        <div class="setting-item">
+          <div class="toggle">
+            <label class="label" for="priceAlertsToggle" style="margin-bottom:0">Price alerts</label>
+            <button type="button" class="toggle-switch" id="priceAlertsToggle"
+                    role="switch" aria-checked="true" aria-labelledby="priceAlertsToggle"></button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="toggle">
+            <label class="label" for="txNotificationsToggle" style="margin-bottom:0">Transaction notifications</label>
+            <button type="button" class="toggle-switch" id="txNotificationsToggle"
+                    role="switch" aria-checked="true" aria-labelledby="txNotificationsToggle"></button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="toggle">
+            <label class="label" for="marketDigestToggle" style="margin-bottom:0">Daily market digest</label>
+            <button type="button" class="toggle-switch" id="marketDigestToggle"
+                    role="switch" aria-checked="false" aria-labelledby="marketDigestToggle"></button>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="submit" class="save-btn" id="saveBtn">Save Settings</button>
+        <button type="button" class="secondary-btn" id="restoreBtn">Restore defaults</button>
+      </div>
+    </form>
+
+    <div class="success-msg" id="successMsg" role="status">Settings saved successfully.</div>
+    <div id="liveStatus" class="visually-hidden" aria-live="polite"></div>
   </div>
 
   <script>
-    // Check if we're in Telegram WebApp
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    
-    // Initialize with sample data
-    const savedSettings = JSON.parse(localStorage.getItem('chenPilotSettings') || JSON.stringify({
+    'use strict';
+
+    // Optional Telegram WebApp bridge — the page also works in a plain browser.
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) tg.ready();
+
+    const DEFAULTS = {
       currency: 'USD',
+      asset: 'XLM',
+      memo: '',
+      locale: 'en-US',
+      dateStyle: 'medium',
+      hourCycle: 'locale',
+      numberStyle: 'decimal',
       priceAlerts: true,
       txNotifications: true,
       marketDigest: false
-    }));
-    
-    document.getElementById('currency').value = savedSettings.currency;
-    document.getElementById('priceAlertsToggle').classList.toggle('active', savedSettings.priceAlerts);
-    document.getElementById('txNotificationsToggle').classList.toggle('active', savedSettings.txNotifications);
-    document.getElementById('marketDigestToggle').classList.toggle('active', savedSettings.marketDigest);
-    
-    // Toggle switches
-    document.querySelectorAll('.toggle-switch').forEach(toggle => {
-      toggle.addEventListener('click', function() {
-        this.classList.toggle('active');
+    };
+
+    let settings = loadSettings();
+
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem('chenPilotSettings');
+        return raw ? { ...DEFAULTS, ...JSON.parse(raw) } : { ...DEFAULTS };
+      } catch {
+        return { ...DEFAULTS };
+      }
+    }
+
+    // ── Formatting helpers (Intl-driven by the regional preferences) ──────
+
+    function hourCycleOption() {
+      return settings.hourCycle === 'locale' ? undefined : settings.hourCycle;
+    }
+
+    function formatPreview() {
+      const now = new Date();
+      const dateOpts = { dateStyle: settings.dateStyle };
+      const timeOpts = {
+        timeStyle: 'short',
+        hourCycle: hourCycleOption()
+      };
+      const numOpts = numberFormatOptions();
+
+      try {
+        document.getElementById('previewDate').textContent =
+          new Intl.DateTimeFormat(settings.locale, dateOpts).format(now);
+        document.getElementById('previewTime').textContent =
+          new Intl.DateTimeFormat(settings.locale, timeOpts).format(now);
+        document.getElementById('previewNumber').textContent =
+          new Intl.NumberFormat(settings.locale, numOpts).format(1234.56);
+      } catch {
+        // Invalid locale fallback — show ISO-ish values rather than nothing.
+        document.getElementById('previewDate').textContent = now.toISOString().slice(0, 10);
+        document.getElementById('previewTime').textContent = now.toTimeString().slice(0, 5);
+        document.getElementById('previewNumber').textContent = '1,234.56';
+      }
+    }
+
+    function numberFormatOptions() {
+      switch (settings.numberStyle) {
+        case 'currency':
+          return { style: 'currency', currency: 'USD' };
+        case 'percent':
+          return { style: 'percent' };
+        case 'compact':
+          return { notation: 'compact', maximumFractionDigits: 1 };
+        default:
+          return { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+      }
+    }
+
+    // ── Accessible selection summary ─────────────────────────────────────
+
+    function updateSelectionSummary() {
+      const memo = settings.memo.trim();
+      const text =
+        `Payment asset ${settings.asset}. ` +
+        (memo ? `Memo "${memo}".` : 'No memo set.');
+      const el = document.getElementById('selectionSummary');
+      if (el.textContent !== text) el.textContent = text;
+    }
+
+    function announce(message) {
+      const el = document.getElementById('liveStatus');
+      el.textContent = '';
+      // Re-set on next frame so repeated identical announcements re-announce.
+      requestAnimationFrame(() => { el.textContent = message; });
+    }
+
+    // ── Form wiring ──────────────────────────────────────────────────────
+
+    const $ = (id) => document.getElementById(id);
+
+    function syncForm() {
+      $('currency').value = settings.currency;
+      $('asset').value = settings.asset;
+      $('memo').value = settings.memo;
+      $('locale').value = settings.locale;
+      $('dateStyle').value = settings.dateStyle;
+      $('hourCycle').value = settings.hourCycle;
+      $('numberStyle').value = settings.numberStyle;
+      for (const [id, key] of [
+        ['priceAlertsToggle', 'priceAlerts'],
+        ['txNotificationsToggle', 'txNotifications'],
+        ['marketDigestToggle', 'marketDigest']
+      ]) {
+        $(id).setAttribute('aria-checked', String(settings[key]));
+      }
+      formatPreview();
+      updateSelectionSummary();
+    }
+
+    document.querySelectorAll('select,input').forEach((el) => {
+      el.addEventListener('change', () => {
+        const key = el.name || el.id;
+        settings[key] = el.type === 'checkbox' ? el.checked : el.value;
+        if (['locale', 'dateStyle', 'hourCycle', 'numberStyle'].includes(key)) {
+          formatPreview();
+        }
+        if (['asset', 'memo'].includes(key)) {
+          updateSelectionSummary();
+        }
+      });
+      el.addEventListener('input', () => {
+        if (el.id === 'memo') {
+          settings.memo = el.value;
+          updateSelectionSummary();
+        }
       });
     });
-    
-    // Save settings
-    document.getElementById('saveBtn').addEventListener('click', function() {
-      const settings = {
-        currency: document.getElementById('currency').value,
-        priceAlerts: document.getElementById('priceAlertsToggle').classList.contains('active'),
-        txNotifications: document.getElementById('txNotificationsToggle').classList.contains('active'),
-        marketDigest: document.getElementById('marketDigestToggle').classList.contains('active')
+
+    document.querySelectorAll('.toggle-switch').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const map = {
+          priceAlertsToggle: 'priceAlerts',
+          txNotificationsToggle: 'txNotifications',
+          marketDigestToggle: 'marketDigest'
+        };
+        settings[map[btn.id]] = btn.getAttribute('aria-checked') !== 'true';
+        btn.setAttribute('aria-checked', String(settings[map[btn.id]]));
+        announce(`${map[btn.id]} ${settings[map[btn.id]] ? 'enabled' : 'disabled'}.`);
+      });
+    });
+
+    // ── Modal system ─────────────────────────────────────────────────────
+    // Each open dialog records the element that opened it. On close, focus
+    // returns to that exact element — including when dialogs are nested, so
+    // closing an inner dialog returns focus inside the outer one, and
+    // closing the outermost returns it to the page trigger.
+
+    const FOCUSABLE =
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const openDialogs = [];
+
+    function openModal({ title, body, actions }) {
+      const trigger = document.activeElement;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-labelledby', 'modalTitle');
+
+      const h2 = document.createElement('h2');
+      h2.id = 'modalTitle';
+      h2.textContent = title;
+
+      const p = document.createElement('p');
+      p.textContent = body;
+
+      const actionsRow = document.createElement('div');
+      actionsRow.className = 'modal-actions';
+
+      const dialog = { overlay, modal, trigger, onKeydown: null };
+
+      function close() {
+        document.removeEventListener('keydown', dialog.onKeydown, true);
+        overlay.remove();
+        const idx = openDialogs.indexOf(dialog);
+        if (idx !== -1) openDialogs.splice(idx, 1);
+        // Restore focus to the exact element that opened this dialog.
+        if (trigger && document.contains(trigger)) {
+          trigger.focus();
+        }
+      }
+
+      dialog.close = close;
+
+      for (const action of actions) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = action.label;
+        btn.className = action.kind === 'danger' ? 'btn-danger' : 'btn-cancel';
+        btn.addEventListener('click', () => {
+          if (action.onClick) action.onClick(dialog);
+          if (action.close !== false) close();
+        });
+        actionsRow.appendChild(btn);
+      }
+
+      modal.appendChild(h2);
+      modal.appendChild(p);
+      modal.appendChild(actionsRow);
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+
+      // Focus trap: keep Tab / Shift+Tab inside the dialog.
+      dialog.onKeydown = (e) => {
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          close();
+          return;
+        }
+        if (e.key !== 'Tab') return;
+        const focusables = Array.from(modal.querySelectorAll(FOCUSABLE))
+          .filter((el) => !el.disabled && el.offsetParent !== null);
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       };
-      
+      document.addEventListener('keydown', dialog.onKeydown, true);
+
+      openDialogs.push(dialog);
+
+      // Initial focus: first focusable element inside the dialog.
+      const initial = modal.querySelector(FOCUSABLE);
+      if (initial) initial.focus();
+
+      return dialog;
+    }
+
+    // ── Actions ─────────────────────────────────────────────────────────
+
+    $('settingsForm').addEventListener('submit', (e) => {
+      e.preventDefault();
       localStorage.setItem('chenPilotSettings', JSON.stringify(settings));
-      
-      const successMsg = document.getElementById('successMsg');
+      const successMsg = $('successMsg');
       successMsg.classList.add('show');
-      
+      announce('Settings saved.');
       setTimeout(() => {
         successMsg.classList.remove('show');
-        tg.close();
+        if (tg) tg.close();
       }, 1500);
     });
+
+    $('restoreBtn').addEventListener('click', () => {
+      openModal({
+        title: 'Restore default settings?',
+        body: 'This resets currency, payment asset, memo, regional format, and notification preferences to their defaults. Your saved settings are replaced immediately.',
+        actions: [
+          {
+            label: 'Restore defaults',
+            kind: 'danger',
+            onClick: () => {
+              settings = { ...DEFAULTS };
+              syncForm();
+              announce('Settings restored to defaults.');
+            }
+          },
+          { label: 'What gets reset?', kind: 'cancel', close: false, onClick: (dialog) => {
+            // Nested dialog: focus must return here (inside this modal)
+            // when the nested dialog closes.
+            openModal({
+              title: 'What gets reset',
+              body: 'Every preference on this page returns to its factory default: display currency USD, payment asset XLM, empty memo, en-US locale with medium dates, locale-default time, decimal numbers, and the default notification toggles.',
+              actions: [{ label: 'Got it', kind: 'cancel' }]
+            });
+          }},
+          { label: 'Cancel', kind: 'cancel' }
+        ]
+      });
+    });
+
+    syncForm();
+    if (tg) tg.expand && tg.expand();
   </script>
 </body>
 </html>
